@@ -1,0 +1,42 @@
+
+#!/bin/bash
+
+# Verifica si ya existe un repositorio git en el directorio de trabajo
+if [ -d ".git" ]; then
+    read -p "Ya existe un repositorio git en este directorio. ¿Deseas borrarlo y continuar? (s/n): " choice
+
+    if [ "$choice" == "s" ]; then
+        rm -rf .git
+    else
+        echo "No se puede continuar sin borrar el repositorio git existente. Abortando."
+        exit 1
+    fi
+fi
+
+# Inicializa un nuevo repositorio git
+git init
+
+# Añade todos los archivos de la carpeta actual al repositorio
+git add .
+
+# Realiza el commit con el nombre proporcionado
+read -p "Ingresa el nombre del commit: " commit_name
+git commit -m "$commit_name"
+
+# Extrae el nombre de usuario y el nombre del repositorio de la página web
+read -p "Ingresa la URL del repositorio remoto en GitHub (por ejemplo, https://github.com/MundoMejorAsesores): " github_page
+echo $github_page
+username="MundoMejorAsesores"
+repo_name=$(echo $github_page | sed 's|.*/||' | sed 's|.git$||')
+echo $user_name
+echo $repo_name
+# Construye la URL del repositorio remoto
+github_remote="https://github.com/$username/$repo_name.git"
+
+# Configura el repositorio remoto en GitHub
+git remote add origin $github_remote
+
+# Sube los cambios al repositorio remoto
+git push -u origin master
+
+echo "El repositorio se ha creado y los archivos se han subido exitosamente."
